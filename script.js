@@ -1,17 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   АБУЗИЩЕ — вся логика страницы. Контент лежит в data.js.
+   ВЫГОДА — вся логика страницы. Контент лежит в data.js.
    Без зависимостей: обычный браузерный JS.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  var $  = function (sel, ctx) { return (ctx || document).querySelector(sel); };
+  var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /* ── Мелкие помощники ───────────────────────────────────────────────── */
 
-  // Неразрывные пробелы в числах: «20 000 ₽» не должно рваться по строкам.
-  function nb(str) { return String(str).replace(/ /g, ' '); }
+  // Неразрывные пробелы в числах: «5 000 ₽» не должно рваться по строкам.
+  function nb(str) { return String(str).replace(/ /g, ' '); }
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -20,10 +20,7 @@
     return n;
   }
 
-  function hidden(text) {
-    var s = el('span', 'visually-hidden', text);
-    return s;
-  }
+  function hidden(text) { return el('span', 'visually-hidden', text); }
 
   // Русские окончания: 1 предложение / 2 предложения / 5 предложений
   function plural(n, one, few, many) {
@@ -33,33 +30,56 @@
     return many;
   }
 
-  /* ── Ссылки на Telegram ─────────────────────────────────────────────── */
+  // Маркировка рекламы: токен erid берём прямо из партнёрской ссылки.
+  function eridOf(url) {
+    var m = /[?&]erid=([^&#]+)/i.exec(url || '');
+    return m ? decodeURIComponent(m[1]) : '';
+  }
 
-  var contacts = (typeof CONTACTS === 'object' && CONTACTS) || {};
-  var channelUrl = contacts.channel || 'https://t.me/';
-  var chatUrl    = contacts.chat    || channelUrl;
+  /* ── Название проекта и ссылки ──────────────────────────────────────── */
+
+  var site = (typeof SITE === 'object' && SITE) || {};
+  var tgChannel = site.telegram || 'https://t.me/';
+  var tgChat    = site.chat || tgChannel;
+
+  if (site.brand) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-brand]'), function (n) {
+      n.textContent = site.brand;
+    });
+  }
 
   var ctaChannel = $('#cta-channel');
   var ctaChat    = $('#cta-chat');
-  if (ctaChannel) { ctaChannel.href = channelUrl; ctaChannel.target = '_blank'; ctaChannel.rel = 'noopener'; }
-  if (ctaChat)    { ctaChat.href    = chatUrl;    ctaChat.target    = '_blank'; ctaChat.rel    = 'noopener'; }
+  if (ctaChannel) {
+    ctaChannel.href = tgChannel; ctaChannel.target = '_blank'; ctaChannel.rel = 'noopener';
+    ctaChannel.firstChild.nodeValue = site.telegramLabel || 'Канал с подборками';
+  }
+  if (ctaChat) {
+    ctaChat.href = tgChat; ctaChat.target = '_blank'; ctaChat.rel = 'noopener';
+    ctaChat.firstChild.nodeValue = site.chatLabel || 'Задать вопрос';
+  }
 
   /* ── Офферы и фильтры ───────────────────────────────────────────────── */
 
   var offersList = $('#offers-list');
   var filterRow  = $('#filters');
   var countEl    = $('#offers-count');
-  var cats       = (typeof CATEGORIES !== 'undefined' && CATEGORIES) || [{ id: 'all', label: 'Все офферы' }];
+  var cats       = (typeof CATEGORIES !== 'undefined' && CATEGORIES) || [{ id: 'all', label: 'Все офферы', cta: 'Оформить' }];
   var offers     = (typeof OFFERS !== 'undefined' && OFFERS) || [];
+  var defaults   = (typeof DEFAULTS !== 'undefined' && DEFAULTS) || {};
   var current    = 'all';
 
+  function catOf(id) {
+    return cats.filter(function (c) { return c.id === id; })[0] || {};
+  }
+
   function offerCard(o) {
+    var cat = catOf(o.cat);
     var li = el('li', 'offer');
 
     /* верхняя строка: категория + плашка */
     var top = el('div', 'offer-top');
-    var cat = cats.filter(function (c) { return c.id === o.cat; })[0];
-    top.appendChild(el('span', null, cat ? cat.label : ''));
+    top.appendChild(el('span', null, cat.label || ''));
     if (o.badge) {
       var badge = el('span', 'offer-badge', o.badge);
       badge.setAttribute('data-badge', o.badge);
@@ -67,43 +87,33 @@
     }
     li.appendChild(top);
 
-    /* крупная сумма бонуса: глазами — цифры, голосом — словами */
-    var amount = el('p', 'offer-amount');
-    var visual = el('span', null, nb(o.amount));
-    visual.setAttribute('aria-hidden', 'true');
-    var unit = el('span', 'offer-unit', o.unit || '');
-    unit.setAttribute('aria-hidden', 'true');
-    amount.appendChild(visual);
-    amount.appendChild(unit);
-    amount.appendChild(hidden(o.read || (o.amount + ' ' + (o.unit || ''))));
-    li.appendChild(amount);
-
-    /* название и суть */
+    /* название компании крупно + продукт */
     var head = el('div');
-    head.appendChild(el('h3', 'offer-brand', o.brand));
+    head.appendChild(el('h3', 'offer-brand', o.partner));
     head.appendChild(el('p', 'offer-title', o.title));
     li.appendChild(head);
 
-    /* условия */
-    var dl = el('dl', 'offer-terms');
-    (o.terms || []).forEach(function (pair) {
-      var row = el('div');
-      row.appendChild(el('dt', null, pair[0]));
-      row.appendChild(el('dd', null, nb(pair[1])));
-      dl.appendChild(row);
+    /* что известно точно — без выдуманных ставок и сроков */
+    var facts = el('ul', 'offer-facts');
+    (o.bullets || defaults[o.cat] || []).forEach(function (b) {
+      facts.appendChild(el('li', null, b));
     });
-    li.appendChild(dl);
+    li.appendChild(facts);
 
     /* подвал карточки */
     var foot = el('div', 'offer-foot');
-    foot.appendChild(el('span', 'offer-payout', nb(o.payout || '')));
+    var erid = eridOf(o.url);
+    foot.appendChild(el('span', 'offer-erid', erid ? 'erid: ' + erid : ''));
 
     var a = el('a', 'offer-cta');
-    a.href = o.url || channelUrl;
+    a.href = o.url || tgChat;
     a.target = '_blank';
     a.rel = o.url ? 'noopener nofollow sponsored' : 'noopener';
-    a.appendChild(document.createTextNode('Забрать бонус'));
-    a.appendChild(hidden(' — ' + o.brand + ', ' + (o.read || '') + ' (откроется в новой вкладке)'));
+    a.appendChild(document.createTextNode(cat.cta || 'Оформить'));
+    a.appendChild(hidden(
+      ' — ' + o.partner + ', ' + o.title +
+      (o.url ? ' (откроется в новой вкладке)' : ' — написать в Telegram (откроется в новой вкладке)')
+    ));
     foot.appendChild(a);
 
     li.appendChild(foot);
@@ -123,7 +133,7 @@
     list.forEach(function (o) { offersList.appendChild(offerCard(o)); });
 
     if (countEl) {
-      var label = (cats.filter(function (c) { return c.id === current; })[0] || {}).label || 'Все офферы';
+      var label = catOf(current).label || 'Все офферы';
       var text = list.length === 0
         ? label + ': подходящих предложений нет'
         : label + ': ' + list.length + ' ' +
@@ -159,18 +169,57 @@
   renderFilters();
   renderOffers();
 
+  /* ── Бегущая строка: названия партнёров без повторов ────────────────── */
+
+  var track = $('#ticker-track');
+  if (track) {
+    var names = offers.map(function (o) { return o.partner; })
+      .filter(function (v, i, a) { return a.indexOf(v) === i; });
+    if (names.length) {
+      for (var pass = 0; pass < 2; pass++) {
+        var row = el('span', 'ticker-row');
+        if (pass === 1) row.setAttribute('aria-hidden', 'true');
+        names.forEach(function (n) {
+          row.appendChild(document.createTextNode(n + ' '));
+          var d = el('i', null, '◆');
+          d.setAttribute('aria-hidden', 'true');
+          row.appendChild(d);
+          row.appendChild(document.createTextNode(' '));
+        });
+        track.appendChild(row);
+      }
+    }
+  }
+
+  /* ── Шаги ───────────────────────────────────────────────────────────── */
+
+  var stepsEl = $('#steps');
+  if (stepsEl && typeof STEPS !== 'undefined') {
+    STEPS.forEach(function (s) {
+      var li = el('li', 'step');
+      li.appendChild(el('h3', 'step-title', s.title));
+      li.appendChild(el('p', null, s.text));
+      stepsEl.appendChild(li);
+    });
+  }
+
   /* ── Цифры ──────────────────────────────────────────────────────────── */
 
   var statsEl = $('#stats');
   if (statsEl && typeof STATS !== 'undefined') {
     STATS.forEach(function (s) {
+      var value = typeof s.value === 'function' ? s.value() : s.value;
+      var label = Array.isArray(s.label)
+        ? plural(Number(value) || 0, s.label[0], s.label[1], s.label[2])
+        : s.label;
+
       var wrap = el('div', 'stat');
-      wrap.appendChild(el('dt', null, s.label));       // порядок в DOM: dt → dd
+      wrap.appendChild(el('dt', null, label));        // порядок в DOM: dt → dd
       var dd = el('dd');
-      var v = el('span', null, nb(s.value));
+      var v = el('span', null, nb(value));
       v.setAttribute('aria-hidden', 'true');
       dd.appendChild(v);
-      dd.appendChild(hidden(s.read || s.value));
+      dd.appendChild(hidden(s.read || String(value)));
       wrap.appendChild(dd);
       statsEl.appendChild(wrap);
     });
@@ -196,7 +245,7 @@
     });
   }
 
-  /* ── Бегущая строка ─────────────────────────────────────────────────── */
+  /* ── Бегущая строка: пауза ──────────────────────────────────────────── */
 
   var ticker = $('#ticker');
   var tickerBtn = $('#ticker-btn');

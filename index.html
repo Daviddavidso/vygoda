@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>АБУЗИЩЕ — бонусы букмекеров, казино и банков</title>
-<meta name="description" content="Закрытая витрина офферов на бонусы: фрибеты, фриспины, дебетовые карты и биржи. Пошаговые схемы, проверенные конторы, вывод в тот же день.">
+<title>ВЫГОДА — подборка займов, дебетовых и кредитных карт</title>
+<meta name="description" content="Подборка финансовых продуктов: займы МФО, дебетовые и кредитные карты банков. Условия — на сайте кредитора, комиссии для клиента нет.">
 <meta name="theme-color" content="#0A090B">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="АБУЗИЩЕ — забирай бонусы, а не смотри на них">
-<meta property="og:description" content="Витрина проверенных офферов: фрибеты, фриспины, карты, биржи. Схема, инструкция, вывод.">
+<meta property="og:title" content="ВЫГОДА — займы и карты в одной подборке">
+<meta property="og:description" content="Займы МФО, дебетовые и кредитные карты банков. Без комиссии для клиента.">
 <meta property="og:locale" content="ru_RU">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -26,8 +26,8 @@
 <header class="site-header" id="top">
   <div class="shell head-in">
     <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true">A</span>
-      <span class="brand-word">АБУЗИЩЕ</span>
+      <span class="brand-mark" aria-hidden="true">В</span>
+      <span class="brand-word" data-brand>ВЫГОДА</span>
     </a>
 
     <nav class="nav" aria-label="Основная">
@@ -53,7 +53,7 @@
       <li><a href="#how">Как это работает</a></li>
       <li><a href="#numbers">Цифры</a></li>
       <li><a href="#faq">Вопросы</a></li>
-      <li><a href="#join">Вступить в канал</a></li>
+      <li><a href="#join">Написать в Telegram</a></li>
     </ul>
   </div>
 </header>
@@ -65,19 +65,19 @@
     <div class="shell">
 
       <ul class="meta-row">
-        <li>ЗАКРЫТАЯ<br>ВИТРИНА</li>
-        <li>БОНУСЫ<br>БК И КАЗИНО</li>
+        <li>ПОДБОРКА<br>ФИНПРОДУКТОВ</li>
+        <li>ЗАЙМЫ<br>И КАРТЫ</li>
         <li>С <span class="meta-num">2021</span></li>
-        <li>ВЫВОД<br>В ТОТ ЖЕ ДЕНЬ</li>
-        <li class="meta-last">18+<br>RU / KZ</li>
+        <li>ЗАЯВКА<br>ОНЛАЙН</li>
+        <li class="meta-last">КОМИССИЯ<br>0 ₽</li>
       </ul>
 
       <h1 class="hero-title">
-        <span class="display line-1">АБУЗИЩЕ</span>
+        <span class="display line-1">ЗАЙМЫ</span>
         <span class="line-2">
-          <span class="display">БОНУСЫ</span>
+          <span class="display">И КАРТЫ</span>
           <span class="marker">
-            <span class="marker-word">В КЭШ</span>
+            <span class="marker-word">БЕЗ ВОДЫ</span>
             <svg class="marker-stroke" viewBox="0 0 320 60" aria-hidden="true" focusable="false">
               <path d="M8 42 C 72 20, 152 16, 238 25 C 270 28, 297 33, 313 39" />
               <path class="thin" d="M20 53 C 92 37, 182 33, 302 47" />
@@ -88,13 +88,13 @@
 
       <div class="hero-grid">
         <p class="hero-lead">
-          Мы собираем офферы, на которых бонус реально доходит до карты, и пишем к каждому
-          пошаговую схему. Ты не ищешь, где подвох, — ты просто повторяешь.
+          Один список вместо десятка вкладок: займы МФО, дебетовые и кредитные карты банков.
+          Условия читаешь у самого кредитора — мы не пересказываем их своими словами.
         </p>
 
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#offers">Смотреть офферы</a>
-          <a class="btn btn-ghost" href="#join">Забрать доступ</a>
+          <a class="btn btn-primary" href="#offers">Смотреть подборку</a>
+          <a class="btn btn-ghost" href="#how">Как это работает</a>
         </div>
 
         <div class="chrome" aria-hidden="true">
@@ -111,16 +111,7 @@
         <span class="ticker-btn-text">Пауза бегущей строки</span>
       </button>
       <div class="ticker-view">
-        <div class="ticker-track">
-          <span class="ticker-row">
-            ФРИБЕТЫ <i>◆</i> ФРИСПИНЫ <i>◆</i> КЭШБЭК <i>◆</i> ДЕБЕТОВЫЕ КАРТЫ <i>◆</i>
-            КРИПТОБИРЖИ <i>◆</i> БЕЗДЕПЫ <i>◆</i> СТРАХОВКА СТАВКИ <i>◆</i>
-          </span>
-          <span class="ticker-row" aria-hidden="true">
-            ФРИБЕТЫ <i>◆</i> ФРИСПИНЫ <i>◆</i> КЭШБЭК <i>◆</i> ДЕБЕТОВЫЕ КАРТЫ <i>◆</i>
-            КРИПТОБИРЖИ <i>◆</i> БЕЗДЕПЫ <i>◆</i> СТРАХОВКА СТАВКИ <i>◆</i>
-          </span>
-        </div>
+        <div class="ticker-track" id="ticker-track"></div>
       </div>
     </div>
   </section>
@@ -129,24 +120,24 @@
   <section class="section" id="offers" tabindex="-1" aria-labelledby="offers-h">
     <div class="shell">
       <div class="sec-head">
-        <p class="kicker"><span aria-hidden="true">[01]</span> Витрина</p>
-        <h2 class="sec-title display" id="offers-h">Офферы<br>в ротации</h2>
+        <p class="kicker"><span aria-hidden="true">[01]</span> Подборка</p>
+        <h2 class="sec-title display" id="offers-h">Займы<br>и карты</h2>
         <p class="sec-lead">
-          Каждый оффер прошёл проверку деньгами: сначала выводим сами, потом отдаём в канал.
-          Если контора начала резать выплаты — оффер уходит с витрины в тот же день.
+          Каждый оффер ведёт напрямую на сайт банка или МФО. Ставку, срок и полную стоимость
+          кредита смотри там же — они меняются, и дублировать их у себя мы не беремся.
         </p>
       </div>
 
       <div class="filters">
         <div class="filter-row" role="group" aria-label="Фильтр офферов по категориям" id="filters"></div>
-        <p class="filter-count" role="status" id="offers-count">Все офферы: 8 предложений</p>
+        <p class="filter-count" role="status" id="offers-count">Все офферы: 29 предложений</p>
       </div>
 
       <ul class="offers" id="offers-list" role="list"></ul>
 
       <p class="offers-note">
-        Цифры выплат — это то, что платит партнёрка. Твой личный выхлоп зависит от того,
-        сколько офферов ты доводишь до вывода.
+        Сайт не выдаёт займы и не принимает платежи. Решение по заявке принимает
+        банк или микрофинансовая организация.
       </p>
     </div>
   </section>
@@ -155,27 +146,11 @@
   <section class="section section-alt" id="how" tabindex="-1" aria-labelledby="how-h">
     <div class="shell">
       <div class="sec-head">
-        <p class="kicker"><span aria-hidden="true">[02]</span> Механика</p>
-        <h2 class="sec-title display" id="how-h">Три шага<br>до вывода</h2>
+        <p class="kicker"><span aria-hidden="true">[02]</span> Порядок</p>
+        <h2 class="sec-title display" id="how-h">Три шага<br>до денег</h2>
       </div>
 
-      <ol class="steps">
-        <li class="step">
-          <h3 class="step-title">Берёшь оффер</h3>
-          <p>Открываешь витрину, выбираешь контору по бонусу и гео. К каждой карточке
-             приложена схема: где регистрироваться, какой минимальный депозит, чего делать нельзя.</p>
-        </li>
-        <li class="step">
-          <h3 class="step-title">Делаешь по шагам</h3>
-          <p>Повторяешь инструкцию один в один. Всё, что нужно, — телефон, карта и пятнадцать минут.
-             Если контора задаёт вопрос, в чате уже есть готовый ответ.</p>
-        </li>
-        <li class="step">
-          <h3 class="step-title">Выводишь</h3>
-          <p>Закрываешь условие, заказываешь вывод и идёшь за следующим оффером.
-             Схемы не одноразовые: большинство контор проходят повторно на новых бонусах.</p>
-        </li>
-      </ol>
+      <ol class="steps" id="steps"></ol>
     </div>
   </section>
 
@@ -204,18 +179,18 @@
   <!-- ── CTA ──────────────────────────────────────────────────────────── -->
   <section class="cta" id="join" tabindex="-1" aria-labelledby="cta-h">
     <div class="shell">
-      <p class="kicker kicker-light"><span aria-hidden="true">[05]</span> Доступ</p>
-      <h2 class="cta-title display" id="cta-h">Заходи<br>в канал</h2>
+      <p class="kicker kicker-light"><span aria-hidden="true">[05]</span> Связь</p>
+      <h2 class="cta-title display" id="cta-h">Новые офферы<br>в Telegram</h2>
       <p class="cta-lead">
-        Новые офферы падают туда первыми — иногда за сутки до того, как контора закроет бонус.
-        Вход бесплатный: платишь только тем временем, которое сам потратишь.
+        Подборка обновляется: банки меняют условия, МФО закрывают акции. В канале выходит
+        то, что добавилось или пропало, — без рассылок в личку.
       </p>
       <div class="cta-actions">
-        <a class="btn btn-light" id="cta-channel" href="https://t.me/abuzzische">
-          Канал с офферами<span class="visually-hidden"> в Telegram (откроется в новой вкладке)</span>
+        <a class="btn btn-light" id="cta-channel" href="https://t.me/">
+          Канал с подборками<span class="visually-hidden"> в Telegram (откроется в новой вкладке)</span>
         </a>
-        <a class="btn btn-outline-light" id="cta-chat" href="https://t.me/abuzzische_chat">
-          Чат сообщества<span class="visually-hidden"> в Telegram (откроется в новой вкладке)</span>
+        <a class="btn btn-outline-light" id="cta-chat" href="https://t.me/">
+          Задать вопрос<span class="visually-hidden"> в Telegram (откроется в новой вкладке)</span>
         </a>
       </div>
     </div>
@@ -227,27 +202,28 @@
   <div class="shell">
     <div class="foot-top">
       <a class="brand brand-foot" href="#top">
-        <span class="brand-mark" aria-hidden="true">A</span>
-        <span class="brand-word">АБУЗИЩЕ</span>
+        <span class="brand-mark" aria-hidden="true">В</span>
+        <span class="brand-word" data-brand>ВЫГОДА</span>
       </a>
       <nav class="foot-nav" aria-label="Дополнительная">
         <ul role="list">
           <li><a href="#offers">Офферы</a></li>
           <li><a href="#how">Как это работает</a></li>
           <li><a href="#faq">Вопросы</a></li>
-          <li><a href="#join">Доступ в канал</a></li>
+          <li><a href="#join">Связаться в Telegram</a></li>
         </ul>
       </nav>
     </div>
 
     <p class="disclaimer">
       <span class="age" aria-hidden="true">18+</span>
-      Материалы сайта носят информационный характер. Азартные игры и ставки связаны с риском
-      потери денег: играй только на суммы, которые готов потерять. Сайт не принимает ставки
-      и не проводит платежи.
+      Реклама. Не является офертой. Сайт носит информационный характер, не выдаёт займы,
+      не оформляет карты и не принимает платежи. Решение по заявке принимает банк или
+      микрофинансовая организация; ставка, срок и полная стоимость кредита указаны
+      на сайте кредитора. Услуги оказываются лицам старше 18 лет.
     </p>
 
-    <p class="copy">© <span id="year">2026</span> АБУЗИЩЕ. Все офферы проверены вручную.</p>
+    <p class="copy">© <span id="year">2026</span> <span data-brand>ВЫГОДА</span>. Подборка обновляется вручную.</p>
   </div>
 </footer>
 

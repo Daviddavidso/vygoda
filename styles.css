@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   АБУЗИЩЕ — тёмная брутал-витрина офферов.
+   ВЫГОДА — тёмная брутал-витрина финансовых офферов.
    Референс клиента: чёрный холст, гигантский конденс-гротеск,
    бордово-красный маркер поверх типографики.
    Контрасты всех пар проверены под WCAG AA.
@@ -280,6 +280,8 @@ main:focus{ outline: none; }
 
 .hero-title{
   margin: 0;
+  /* line-height меньше единицы: верхушки букв вылезают за бокс — компенсируем */
+  padding-top: .2em;
   font-size: clamp(40px, 13.4vw, 208px);
 }
 .hero-title .display{ display: block; }
@@ -460,6 +462,7 @@ main:focus{ outline: none; }
 .sec-head{ margin-bottom: clamp(28px, 4vw, 56px); }
 .sec-title{
   margin: 14px 0 0;
+  padding-top: .18em;
   font-size: clamp(38px, 7.4vw, 116px);
 }
 .sec-lead{
@@ -524,8 +527,8 @@ main:focus{ outline: none; }
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  min-height: 340px;
+  gap: 16px;
+  min-height: 320px;
   padding: clamp(20px, 2.2vw, 30px);
   background: var(--bg);
   transition: background-color .2s ease;
@@ -552,22 +555,11 @@ main:focus{ outline: none; }
 }
 .offer-badge[data-badge="СКОРО"]{ border-color: var(--line-control); color: var(--text-2); }
 
-.offer-amount{
-  display: flex;
-  align-items: baseline;
-  gap: .12em;
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(46px, 5vw, 76px);
-  line-height: .9;
-  letter-spacing: -.01em;
-}
-.offer-unit{ font-size: .42em; color: var(--accent-text); }
-
 .offer-brand{
   font-family: var(--display);
-  font-size: 22px;
-  letter-spacing: .06em;
+  font-size: clamp(28px, 2.6vw, 40px);
+  line-height: 1;
+  letter-spacing: .02em;
   text-transform: uppercase;
 }
 .offer-title{
@@ -577,22 +569,35 @@ main:focus{ outline: none; }
   line-height: 1.5;
 }
 
-.offer-terms{
+.offer-facts{
   margin-top: auto;
   border-top: 1px solid var(--line-soft);
   padding-top: 14px;
+  display: grid;
+  gap: 7px;
+  font-size: 13.5px;
+  color: var(--text-2);
+}
+.offer-facts li{
+  position: relative;
+  padding-left: 18px;
+  line-height: 1.45;
+}
+.offer-facts li::before{
+  content: '';
+  position: absolute;
+  left: 0; top: .55em;
+  width: 7px; height: 1px;
+  background: var(--accent-text);
+}
+
+.offer-erid{
   font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: .03em;
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  color: var(--muted);
+  word-break: break-all;
 }
-.offer-terms > div{
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 4px 0;
-}
-.offer-terms dt{ color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
-.offer-terms dd{ color: var(--text); text-align: right; }
 
 .offer-foot{
   display: flex;
@@ -600,12 +605,6 @@ main:focus{ outline: none; }
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-}
-.offer-payout{
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .08em;
-  color: var(--muted);
 }
 .offer-cta{
   display: inline-flex;
@@ -754,6 +753,7 @@ main:focus{ outline: none; }
 }
 .cta-title{
   margin: 14px 0 0;
+  padding-top: .18em;
   font-size: clamp(46px, 9vw, 150px);
   color: #FFFFFF;
 }
