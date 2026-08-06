@@ -547,13 +547,34 @@ main:focus{ outline: none; }
   text-transform: uppercase;
   color: var(--muted);
 }
+/* Оффер с боевой партнёрской ссылкой. Рамка — только усиление:
+   статус написан словом в плашке ДОСТУПЕН, поэтому карточка остаётся
+   различимой без цвета. Рамка внутренней тенью, а не border: сетка
+   собрана на gap:1px, настоящая рамка сдвинула бы карточку и удвоила линию.
+   Цвет --accent-text (не --accent-fill): 4.0:1 к цвету сетки и 4.9:1
+   к фону при наведении — --accent-fill там проваливается ниже 3:1. */
+.offer--hot{ box-shadow: inset 0 0 0 2px var(--accent-text); }
+
+.offer-badges{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 .offer-badge{
   padding: 4px 9px;
-  border: 1px solid var(--accent-fill);
+  border: 1px solid var(--accent-text);
   color: var(--accent-text);
   letter-spacing: .12em;
+  white-space: nowrap;
 }
-.offer-badge[data-badge="СКОРО"]{ border-color: var(--line-control); color: var(--text-2); }
+/* Стиль привязан к kind, а не к русскому тексту плашки: иначе смена
+   формулировки молча ломает оформление. */
+.offer-badge[data-badge-kind="live"]{
+  background: var(--wine);
+  border-color: var(--accent-text);
+  color: #FFFFFF;                          /* белый на #6E0F1D — 12:1 */
+}
+.offer-badge[data-badge-kind="soon"]{ border-color: var(--line-control); color: var(--text-2); }
 
 .offer-brand{
   font-family: var(--display);
@@ -622,7 +643,21 @@ main:focus{ outline: none; }
   text-decoration: none;
   transition: background-color .16s ease, border-color .16s ease, color .16s ease;
 }
-.offer:hover .offer-cta{ background: var(--accent-fill); border-color: var(--accent-fill); color: #FFFFFF; }
+.offer-cta-arrow{ margin-left: .5em; font-size: .9em; }
+
+/* Кнопка живого оффера залита сразу, без наведения: с клавиатуры и на
+   тач-экране ховера нет, а разница между «оформить» и «спросить» должна
+   быть видна всегда. Белый на #C1123F — 6.1:1.
+   Рамка на тон светлее заливки: периметр кнопки должен держать 3:1
+   к фону карточки, а сам --accent-fill на наведённой карточке даёт 2.9. */
+.offer--hot .offer-cta{
+  background: var(--accent-fill);
+  border-color: var(--accent-hover);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.offer:hover .offer-cta{ background: var(--accent-fill); border-color: var(--accent-hover); color: #FFFFFF; }
+/* белый на #DC143C — 5.0:1, запас небольшой: темнее делать нельзя */
 .offer-cta:hover{ background: var(--accent-hover); border-color: var(--accent-hover); color: #FFFFFF; }
 
 .offers-note{
@@ -828,6 +863,9 @@ main:focus{ outline: none; }
 /* ── Появление блоков ─────────────────────────────────────────────────── */
 .reveal{ opacity: 0; transform: translateY(18px); }
 .reveal.is-in{ opacity: 1; transform: none; transition: opacity .5s ease, transform .5s ease; }
+/* Блок ещё не проявился, но табуляция уже может попасть на его кнопку —
+   не даём фокусу уйти на невидимый элемент. */
+.reveal:focus-within{ opacity: 1; transform: none; transition: none; }
 
 /* ── Адаптив ──────────────────────────────────────────────────────────── */
 @media (max-width: 1080px){
@@ -871,6 +909,12 @@ main:focus{ outline: none; }
     --line-soft: #8A868E;
     --line-control: #FFFFFF;
   }
+  /* Сетка карточек здесь становится светлой (--line-soft: #8A868E), и красная
+     рамка на ней пропадает — 1.03:1. Тому, кто попросил больше контраста,
+     нельзя отдать меньше: переводим маркер на белый и утолщаем.
+     Смысл всё равно несёт слово в плашке. */
+  .offer--hot{ box-shadow: inset 0 0 0 3px #FFFFFF; }
+  .offer-badge[data-badge-kind="live"]{ border-color: #FFFFFF; }
 }
 
 /* ── Принудительные цвета (Windows High Contrast) ─────────────────────── */
@@ -878,6 +922,12 @@ main:focus{ outline: none; }
   :where(a, button, summary, [tabindex]):focus-visible{ outline-color: Highlight; }
   .btn, .filter-btn, .offer-cta, .ticker-btn{ border: 1px solid ButtonBorder; }
   .grain, .chrome{ display: none; }
+  /* Цвета здесь схлопываются в системную палитру, и живой оффер перестал бы
+     отличаться. Различаем толщиной, а не оттенком. Highlight не берём —
+     он занят выделением и рамкой фокуса. */
+  .offer--hot{ box-shadow: inset 0 0 0 3px CanvasText; }
+  .offer-badge{ border: 1px solid CanvasText; }
+  .offer-badge[data-badge-kind="live"]{ border-width: 2px; }
 }
 
 @media print{

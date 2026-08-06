@@ -65,26 +65,47 @@
   var filterRow  = $('#filters');
   var countEl    = $('#offers-count');
   var cats       = (typeof CATEGORIES !== 'undefined' && CATEGORIES) || [{ id: 'all', label: 'Все офферы', cta: 'Оформить' }];
-  var offers     = (typeof OFFERS !== 'undefined' && OFFERS) || [];
   var defaults   = (typeof DEFAULTS !== 'undefined' && DEFAULTS) || {};
   var current    = 'all';
+
+  /* Офферы с боевой партнёрской ссылкой идут первыми — сортируем один раз,
+     до отрисовки, по копии массива (sort меняет исходный на месте, а OFFERS
+     ещё нужен бегущей строке). Сравнение числовое: у него полный порядок,
+     поэтому остальные офферы сохраняют группировку по категориям из data.js.
+     Порядок именно в DOM, а не в CSS: order/dense разошлись бы с табуляцией. */
+  var live = function (o) { return !!(o && o.url); };
+  var offers = ((typeof OFFERS !== 'undefined' && OFFERS) || []).slice()
+    .sort(function (a, b) { return (live(b) ? 1 : 0) - (live(a) ? 1 : 0); });
 
   function catOf(id) {
     return cats.filter(function (c) { return c.id === id; })[0] || {};
   }
 
+  /* Плашка. kind — для стилей, чтобы вид не зависел от русского текста. */
+  function badgeEl(text, kind) {
+    var b = el('span', 'offer-badge', text);
+    b.setAttribute('data-badge-kind', kind);
+    return b;
+  }
+
   function offerCard(o) {
     var cat = catOf(o.cat);
-    var li = el('li', 'offer');
+    var isLive = live(o);
+    var li = el('li', 'offer' + (isLive ? ' offer--hot' : ''));
 
-    /* верхняя строка: категория + плашка */
+    /* верхняя строка: категория + плашки.
+       Статус ДОСТУПЕН / СКОРО — словом, а не только рамкой: цвет как
+       единственный признак не читается при дальтонизме и в режиме
+       принудительных цветов. Рядом может стоять редакторская плашка (ТОП),
+       поэтому слот — группа, а не одно место. */
     var top = el('div', 'offer-top');
     top.appendChild(el('span', null, cat.label || ''));
-    if (o.badge) {
-      var badge = el('span', 'offer-badge', o.badge);
-      badge.setAttribute('data-badge', o.badge);
-      top.appendChild(badge);
-    }
+
+    var badges = el('div', 'offer-badges');
+    badges.appendChild(badgeEl(isLive ? 'ДОСТУПЕН' : 'СКОРО', isLive ? 'live' : 'soon'));
+    if (o.badge) badges.appendChild(badgeEl(o.badge, 'note'));
+    top.appendChild(badges);
+
     li.appendChild(top);
 
     /* название компании крупно + продукт */
@@ -95,6 +116,7 @@
 
     /* что известно точно — без выдуманных ставок и сроков */
     var facts = el('ul', 'offer-facts');
+    facts.setAttribute('role', 'list');       // list-style:none снимает роль в Safari
     (o.bullets || defaults[o.cat] || []).forEach(function (b) {
       facts.appendChild(el('li', null, b));
     });
@@ -105,14 +127,24 @@
     var erid = eridOf(o.url);
     foot.appendChild(el('span', 'offer-erid', erid ? 'erid: ' + erid : ''));
 
-    var a = el('a', 'offer-cta');
+    /* Кнопка называется тем, что делает: у оффера со ссылкой — «Оформить»,
+       у оффера без ссылки — «Написать в Telegram», потому что ведёт она
+       именно туда. Видимый текст идёт первым в доступном имени: голосовое
+       управление активирует кнопку по её началу. */
+    var a = el('a', 'offer-cta' + (isLive ? '' : ' offer-cta--soft'));
     a.href = o.url || tgChat;
     a.target = '_blank';
-    a.rel = o.url ? 'noopener nofollow sponsored' : 'noopener';
-    a.appendChild(document.createTextNode(cat.cta || 'Оформить'));
+    a.rel = isLive ? 'noopener nofollow sponsored' : 'noopener';
+    a.appendChild(document.createTextNode(isLive ? (cat.cta || 'Оформить') : 'Написать в Telegram'));
+
+    var arrow = el('span', 'offer-cta-arrow', '↗');   // видимый признак новой вкладки
+    arrow.setAttribute('aria-hidden', 'true');
+    a.appendChild(arrow);
+
     a.appendChild(hidden(
       ' — ' + o.partner + ', ' + o.title +
-      (o.url ? ' (откроется в новой вкладке)' : ' — написать в Telegram (откроется в новой вкладке)')
+      (isLive ? ', прямая ссылка партнёра' : '') +
+      ' (откроется в новой вкладке)'
     ));
     foot.appendChild(a);
 
